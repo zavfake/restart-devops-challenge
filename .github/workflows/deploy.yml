@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: AWSRestartDeployer   # specify environment if needed
+    environment: AWSRestartDeployer   # specify environment
 
     steps:
       - name: Checkout repository
