@@ -22,14 +22,9 @@ jobs:
       - name: Deploy to EC2 Amazon Linux
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            # Go to app dir, or clone if it doesn't exist
-            cd ~/app || git clone https://github.com/<your-username>/<your-repo>.git ~/app
-            cd ~/app
-            git pull origin main
-
-            # Example Node.js app on Amazon Linux
-            npm install
-            pm2 restart app || pm2 start npm --name "app" -- start
+              git clone https://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@github.com/zavfake/restart-devops-challenge.git
+              sudo cp restart-devops-challenge/hello.html /var/www/html/index.html
+              sudo rm -rf restart-devops-challenge
           EOF
 
           
