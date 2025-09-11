@@ -1,0 +1,31 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main   # or any branch you want to trigger deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: AWSRestartDeployer   # specify environment
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ~/app || git clone https://github.com/<your-username>/<your-repo>.git ~/app
+            cd ~/app
+            git pull origin main
+            # Example Node.js app:
+            npm install
+            pm2 restart app || pm2 start npm --name "app" -- start
+          EOF
