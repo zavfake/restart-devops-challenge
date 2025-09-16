@@ -1,0 +1,30 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main   # or any branch you want to trigger deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: AWSRestartDeployer   # specify environment 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2 Amazon Linux
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+              git clone https://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@github.com/zavfake/restart-devops-challenge.git
+              sudo cp restart-devops-challenge/hello.html /var/www/html/index.html
+              sudo rm -rf restart-devops-challenge
+          EOF
+
+          
